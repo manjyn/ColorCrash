@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3eb9506244445b04faf217ac2e9638f6, type: 3}
+  m_Name: UnitDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::ColorCrash.Units.UnitDatabase
+  records:
+  - unitId: Footman
+    unitName: Footman
+    maxHp: 120
+    defense: 5
+    moveSpeed: 35
+    meleeAttackDamage: 30
+    meleeAttackRange: 10
+    meleeAttackCooldown: 0.8
+    rangeAttackDamage: 0
+    rangeAttackRange: 0
+    rangeAttackCooldown: 0
+    searchRadius: 100
+    separationRadius: 8
+    inkCost: 2
+    tileCaptureDelay: 0.3
+    requiredTileHits: 1
+  - unitId: EliteUnit
+    unitName: EliteUnit
+    maxHp: 220
+    defense: 15
+    moveSpeed: 25
+    meleeAttackDamage: 70
+    meleeAttackRange: 11
+    meleeAttackCooldown: 1
+    rangeAttackDamage: 0
+    rangeAttackRange: 0
+    rangeAttackCooldown: 0
+    searchRadius: 200
+    separationRadius: 9
+    inkCost: 3
+    tileCaptureDelay: 1
+    requiredTileHits: 2
+  - unitId: Warlord
+    unitName: Warlord
+    maxHp: 550
+    defense: 30
+    moveSpeed: 18
+    meleeAttackDamage: 90
+    meleeAttackRange: 14
+    meleeAttackCooldown: 1.2
+    rangeAttackDamage: 0
+    rangeAttackRange: 0
+    rangeAttackCooldown: 0
+    searchRadius: 200
+    separationRadius: 12
+    inkCost: 4
+    tileCaptureDelay: 2
+    requiredTileHits: 4
+  - unitId: Archer
+    unitName: Archer
+    maxHp: 90
+    defense: 5
+    moveSpeed: 25
+    meleeAttackDamage: 0
+    meleeAttackRange: 0
+    meleeAttackCooldown: 0
+    rangeAttackDamage: 50
+    rangeAttackRange: 80
+    rangeAttackCooldown: 1
+    searchRadius: 800
+    separationRadius: 9
+    inkCost: 3
+    tileCaptureDelay: 0.8
+    requiredTileHits: 3

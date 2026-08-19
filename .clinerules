@@ -1,0 +1,11 @@
+# Role & Environment
+- Environment: Unity 6.3 LTS & C# 12 / .NET 8
+- Primary Goal: Standard mobile game development optimization.
+
+# Code Generation Rules
+- Do NOT use deprecated APIs from older Unity versions (e.g., old rendering/physics systems).
+- Prefer Unity 6's new features (e.g., updated URP, Advanced Graphics features if applicable).
+- Optimize for mobile performance (Minimize Garbage Collection, use Object Pooling).
+
+# Output Language
+- Always reply and write code comments in Korean. (답변과 코드 주석은 항상 한국어로 작성해 주세요.)
