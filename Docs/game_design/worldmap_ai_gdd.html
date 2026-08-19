@@ -1,0 +1,163 @@
+﻿<!DOCTYPE html>
+<html lang='ko'>
+<head>
+<meta charset='UTF-8'>
+<title>컬러 크러쉬: 월드맵 적(Red 팀) AI 기획서</title>
+<style>
+    html { scroll-behavior: smooth; }
+    :root {
+        --bg-color: #0f172a;
+        --card-bg: #1e293b;
+        --accent-color: #38bdf8;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+        --border-color: #334155;
+        --table-header-bg: #0f172a;
+        --code-bg: #020617;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-primary);
+        line-height: 1.75;
+        padding: 40px 60px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    h1 { font-size: 2.2rem; color: var(--accent-color); margin-top: 20px; margin-bottom: 24px; border-bottom: 2px solid var(--accent-color); padding-bottom: 12px; scroll-margin-top: 20px; }
+    h2 { font-size: 1.6rem; color: #e2e8f0; margin-top: 40px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); scroll-margin-top: 20px; }
+    h3 { font-size: 1.25rem; color: var(--accent-color); margin-top: 24px; margin-bottom: 12px; scroll-margin-top: 20px; }
+    h4 { font-size: 1.05rem; color: #cbd5e1; margin-top: 18px; margin-bottom: 8px; scroll-margin-top: 20px; }
+    p, ul, ol { margin-bottom: 16px; color: #cbd5e1; }
+    ul, ol { padding-left: 24px; }
+    li { margin-bottom: 6px; }
+    hr { border: none; border-top: 1px solid var(--border-color); margin: 32px 0; }
+    table { width: 100%; border-collapse: collapse; margin: 24px 0; background-color: var(--card-bg); border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); }
+    th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 0.92rem; }
+    th { background-color: var(--table-header-bg); color: var(--accent-color); font-weight: 600; }
+    tr:hover { background-color: #26334d; }
+    pre { background-color: var(--code-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 18px; overflow-x: auto; margin: 20px 0; font-family: 'Courier New', Courier, monospace; color: #e2e8f0; font-size: 0.9rem; line-height: 1.5; }
+    code { background-color: #1e293b; color: #38bdf8; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 0.9em; }
+    pre code { background-color: transparent; color: inherit; padding: 0; }
+    strong { color: #f8fafc; }
+    a { color: #38bdf8; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<h1 id='컬러-크러쉬:-월드맵-적red-팀-ai-기획서'>컬러 크러쉬: 월드맵 적(Red 팀) AI 기획서</h1>
+<hr>
+<h2 id='목차-table-of-contents'>목차 (Table of Contents)</h2>
+<ul><li><a href='#1-개요-overview'>1. 개요 (Overview)</a></li></ul>
+<ul><li><a href='#11-월드맵-대전략-ai-정의-grand-strategy-ai'>1.1 월드맵 대전략 AI 정의 (Grand Strategy AI)</a></li></ul>
+<ul><li><a href='#2-턴-기반-의사결정-프로세스-turn-decision-sequence'>2. 턴 기반 의사결정 프로세스 (Turn Decision Sequence)</a></li></ul>
+<ul><li><a href='#21-영토-및-위협도-평가-battlefield-evaluator'>2.1 영토 및 위협도 평가 (Battlefield Evaluator)</a></li></ul>
+<ul><li><a href='#22-재화goldap-자원-배분-로직'>2.2 재화(Gold/AP) 자원 배분 로직</a></li></ul>
+<ul><li><a href='#3-건물-건설-및-테크-트리-알고리즘-tech-planning'>3. 건물 건설 및 테크 트리 알고리즘 (Tech Planning)</a></li></ul>
+<ul><li><a href='#4-자동-시뮬레이션-침공-및-타겟팅-알고리즘-auto-battle-invasion'>4. 자동 시뮬레이션 침공 및 타겟팅 알고리즘 (Auto-Battle Invasion)</a></li></ul>
+<ul><li><a href='#41-자동-전투-연산-공식-auto-battle-formula'>4.1 자동 전투 연산 공식 (Auto-Battle Formula)</a></li></ul>
+<ul><li><a href='#42-수비-건물-보너스-가산-로직'>4.2 수비 건물 보너스 가산 로직</a></li></ul>
+<ul><li><a href='#5-난이도-및-3대-ai-성향-프로필-ai-archetypes'>5. 난이도 및 3대 AI 성향 프로필 (AI Archetypes)</a></li></ul>
+<hr>
+<h2 id='1-개요-overview'>1. 개요 (Overview)</h2>
+<p>본 기획서는 Color Crash 월드맵 전역 모드에서 <strong>적군(Red 팀) 세력을 총괄 제어하는 대전략 인공지능(Grand Strategy AI)</strong>의 턴(Turn)별 의사결정 프로세스, 재화(Gold/AP) 배분, 훈련소 테크 트리 구축, 그리고 플레이어(Blue 팀) 및 중립(도적단) 타일 자동 시뮬레이션 침공 알고리즘을 정의합니다.</p>
+<h3 id='11-월드맵-대전략-ai-정의-grand-strategy-ai'>1.1 월드맵 대전략 AI 정의 (Grand Strategy AI)</h3>
+<p>월드맵 적 AI는 인게임 실시간 전투 AI와 명확히 구분되며, 턴 시작 시 전역 영토 상황을 종합적으로 판단하여 내정, 건물 건설, 부대 이동, 자동 침공을 총괄 지휘하는 거시적 총사령관 AI입니다.</p>
+<hr>
+<h2 id='2-턴-기반-의사결정-프로세스-turn-decision-sequence'>2. 턴 기반 의사결정 프로세스 (Turn Decision Sequence)</h2>
+<p>적 AI는 매 턴이 시작될 때마다 아래의 4단계 순차 알고리즘에 따라 행동합니다.</p>
+<pre><code>[ 1단계: 영토 &amp; 자원 평가 (Evaluator) ] ── 점령률, 골드/AP 보유량, 유저 위협도 측정
+       │
+       ▼
+[ 2단계: 내정 &amp; 훈련소 건설 (Tech Planning) ] ── GoldMine, Farmland, 훈련소 건설
+       │
+       ▼
+[ 3단계: AP 배분 &amp; 정찰 (AP Allocation) ] ── 블라인드 타일 탐색, 부대 이동
+       │
+       ▼
+[ 4단계: 자동 시뮬레이션 침공 (Auto-Invasion) ] ── 유저/도적단 타일 자동 전투 실행</code></pre>
+<h3 id='21-영토-및-위협도-평가-battlefield-evaluator'>2.1 영토 및 위협도 평가 (Battlefield Evaluator)</h3>
+<ul><li><strong>자원 우위 지표</strong>: <code>(AI 보유 자원 타일 수 / 플레이어 보유 자원 타일 수)</code> 비율 측정.</li></ul>
+<ul><li><strong>유저 전선 접근도</strong>: AI 영토 경계선 타일로부터 유저의 최전방 영토까지의 최단 타일 거리 측정.</li></ul>
+<h3 id='22-재화goldap-자원-배분-로직'>2.2 재화(Gold/AP) 자원 배분 로직</h3>
+<ul><li><strong>Gold 우선순위</strong>:</li></ul>
+<p>1순위: 자원 생산 건물(금광/농장) 건설 ➔ 2순위: 훈련소 건설/업그레이드 ➔ 3순위: AP 보충 구매</p>
+<ul><li><strong>AP 우선순위</strong>:</li></ul>
+<p>1순위: 자동 시뮬레이션 공격 행동 ➔ 2순위: 미탐사 블라인드 타일 정찰 ➔ 3순위: 이월 저축</p>
+<hr>
+<h2 id='3-건물-건설-및-테크-트리-알고리즘-tech-planning'>3. 건물 건설 및 테크 트리 알고리즘 (Tech Planning)</h2>
+<p>적 AI는 전황 및 플레이어의 보유 덱 성향을 감지하여 훈련소 건물을 적응형으로 건설합니다.</p>
+<table>
+  <thead>
+    <tr>
+      <th>유저의 덱 성향</th>
+      <th>적 AI의 우선 건설 훈련소</th>
+      <th>인게임 전투 씬 해금 영향</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>유저 근접 물량 덱 (Footman 위주)</td>
+      <td><strong>공병 훈련소 (Barricade/Cannon)</strong></td>
+      <td>Barricade, Cannon 해금 ➔ 킬존 구축</td>
+    </tr>
+    <tr>
+      <td>유저 원거리/공성 덱 (Archer/Mortar)</td>
+      <td><strong>Footman / Elite 훈련소</strong></td>
+      <td>Footman 쿨타임 감소 및 Elite 해금 ➔ 돌파</td>
+    </tr>
+    <tr>
+      <td>유저 방어 벙커링 구축 시</td>
+      <td><strong>Warlord / 공병 훈련소 (Mortar)</strong></td>
+      <td>Warlord 중탱커 및 Mortar 해금 ➔ 공성</td>
+    </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id='4-자동-시뮬레이션-침공-및-타겟팅-알고리즘-auto-battle-invasion'>4. 자동 시뮬레이션 침공 및 타겟팅 알고리즘 (Auto-Battle Invasion)</h2>
+<p>적 AI가 월드맵 상에서 플레이어 타일(Blue 팀)이나 중립 도적단 타일을 공격할 때는 플레이어 피로도를 줄이기 위해 <strong>인게임 씬 전환 없이 1초 만에 자동 시뮬레이션 연산으로 결과를 결정</strong>합니다.</p>
+<h3 id='41-자동-전투-연산-공식-auto-battle-formula'>4.1 자동 전투 연산 공식 (Auto-Battle Formula)</h3>
+<pre><code>최종 승리 판정 수치 = (공격 측 전투력 / 수비 측 전투력) x 난수 보정치 (0.85 ~ 1.15)</code></pre>
+<ul><li><strong>공격 측 전투력 (AI 공격력)</strong>: <code>(AI 출격 유닛 수 x 기본 ATK) + (투입 AP x 1.1)</code></li></ul>
+<ul><li><strong>수비 측 전투력 (수비력)</strong>: <code>(수비 유닛 수 x 기본 ATK) + 건물 수비 가산 보너스</code></li></ul>
+<ul><li><strong>난수 보정치 (Luck Factor)</strong>: 0.85 ~ 1.15 사이의 무작위 난수 곱셈 연산.</li></ul>
+<h3 id='42-수비-건물-보너스-가산-로직'>4.2 수비 건물 보너스 가산 로직</h3>
+<p>유저가 타일에 방어 건물을 지어둔 경우 자동 전투 시 아래의 수비력 가산 보너스가 적용됩니다:</p>
+<ul><li><strong>Barricade (바리케이드)</strong> 건설 타일: 수비 측 전투력 <strong>+25% 가산</strong></li></ul>
+<ul><li><strong>Cannon (캐논)</strong> 건설 타일: 수비 측 전투력 <strong>+35% 가산</strong></li></ul>
+<ul><li><strong>Mortar (박격포)</strong> 건설 타일: 수비 측 전투력 <strong>+45% 가산</strong></li></ul>
+<h4 id='판정-결과'>판정 결과</h4>
+<ul><li><strong>수치 1.0 이상</strong>: <strong>공격 측(AI) 승리</strong> ➔ 타일 점령 및 수비 부대 패퇴. *(월드맵 토스트 알림: "Red 팀이 A-3 타일을 점령했습니다.")*</li></ul>
+<ul><li><strong>수치 1.0 미만</strong>: <strong>수비 측(유저) 승리 (방어 성공)</strong> ➔ 타일 소유권 유지 및 AI 부대 퇴각. *(월드맵 토스트 알림: "Red 팀의 기습을 방어해냈습니다! (승리)")*</li></ul>
+<hr>
+<h2 id='5-난이도-및-3대-ai-성향-프로필-ai-archetypes'>5. 난이도 및 3대 AI 성향 프로필 (AI Archetypes)</h2>
+<p>스테이지 설정 및 난이도에 따라 적 AI의 대전략 성향 프로필이 결정됩니다.</p>
+<table>
+  <thead>
+    <tr>
+      <th>AI 성향 프로필</th>
+      <th>특징 및 내정 템포</th>
+      <th>자동 침공 발동 조건</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>유형 1: 내정 성장의 군주 (Economic Boomer)</strong></td>
+      <td>금광/농장/목장 선점 우선. 초반 내정에 집중하며 후반 압도적 자원 압박</td>
+      <td>AI 승리 확률 85% 이상 확신 시만 공격</td>
+    </tr>
+    <tr>
+      <td><strong>유형 2: 영토 정복자 (Territory Conqueror)</strong></td>
+      <td>중립 타일 폭풍 정찰 및 점령. 타일 수 비례 골드 수급 극대화</td>
+      <td>승리 확률 65% 이상 시 적극 점령 공격</td>
+    </tr>
+    <tr>
+      <td><strong>유형 3: 호전적 침략자 (Aggressive Hunter)</strong></td>
+      <td>유저의 본진/자원 타일 방향 최단 거리 직진. AP가 차는 대로 유저 타일 기습</td>
+      <td>승리 확률 50% 이상 시 무조건 즉시 침공</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

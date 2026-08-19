@@ -1,0 +1,228 @@
+﻿<!DOCTYPE html>
+<html lang='ko'>
+<head>
+<meta charset='UTF-8'>
+<title>컬러 크러쉬: 월드맵 메인 기획서</title>
+<style>
+    html { scroll-behavior: smooth; }
+    :root {
+        --bg-color: #0f172a;
+        --card-bg: #1e293b;
+        --accent-color: #38bdf8;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+        --border-color: #334155;
+        --table-header-bg: #0f172a;
+        --code-bg: #020617;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-primary);
+        line-height: 1.75;
+        padding: 40px 60px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    h1 { font-size: 2.2rem; color: var(--accent-color); margin-top: 20px; margin-bottom: 24px; border-bottom: 2px solid var(--accent-color); padding-bottom: 12px; scroll-margin-top: 20px; }
+    h2 { font-size: 1.6rem; color: #e2e8f0; margin-top: 40px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); scroll-margin-top: 20px; }
+    h3 { font-size: 1.25rem; color: var(--accent-color); margin-top: 24px; margin-bottom: 12px; scroll-margin-top: 20px; }
+    h4 { font-size: 1.05rem; color: #cbd5e1; margin-top: 18px; margin-bottom: 8px; scroll-margin-top: 20px; }
+    p, ul, ol { margin-bottom: 16px; color: #cbd5e1; }
+    ul, ol { padding-left: 24px; }
+    li { margin-bottom: 6px; }
+    hr { border: none; border-top: 1px solid var(--border-color); margin: 32px 0; }
+    table { width: 100%; border-collapse: collapse; margin: 24px 0; background-color: var(--card-bg); border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); }
+    th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 0.92rem; }
+    th { background-color: var(--table-header-bg); color: var(--accent-color); font-weight: 600; }
+    tr:hover { background-color: #26334d; }
+    pre { background-color: var(--code-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 18px; overflow-x: auto; margin: 20px 0; font-family: 'Courier New', Courier, monospace; color: #e2e8f0; font-size: 0.9rem; line-height: 1.5; }
+    code { background-color: #1e293b; color: #38bdf8; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 0.9em; }
+    pre code { background-color: transparent; color: inherit; padding: 0; }
+    strong { color: #f8fafc; }
+    a { color: #38bdf8; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<h1 id='컬러-크러쉬:-월드맵-메인-기획서'>컬러 크러쉬: 월드맵 메인 기획서</h1>
+<hr>
+<h2 id='목차-table-of-contents'>목차 (Table of Contents)</h2>
+<ul><li><a href='#1-개요-및-시스템-컨셉-overview--concept'>1. 개요 및 시스템 컨셉 (Overview &amp; Concept)</a></li></ul>
+<ul><li><a href='#2-월드맵-타일-종류-및-인터랙션-tile-types--interactions'>2. 월드맵 타일 종류 및 인터랙션 (Tile Types &amp; Interactions)</a></li></ul>
+<ul><li><a href='#3-월드맵-경제-및-재화-시스템-economy--currencies'>3. 월드맵 경제 및 재화 시스템 (Economy &amp; Currencies)</a></li></ul>
+<ul><li><a href='#31-골드-gold-재화-메카닉'>3.1 골드 (Gold) 재화 메카닉</a></li></ul>
+<ul><li><a href='#32-행동력-ap---action-point-메카닉'>3.2 행동력 (AP - Action Point) 메카닉</a></li></ul>
+<ul><li><a href='#4-타일-지형-속성-및-자원-구획-tile-terrain--resources'>4. 타일 지형 속성 및 자원 구획 (Tile Terrain &amp; Resources)</a></li></ul>
+<ul><li><a href='#5-월드맵-타일-건물-및-훈련소-world-map-structures--training-centers'>5. 월드맵 타일 건물 및 훈련소 (World Map Structures &amp; Training Centers)</a></li></ul>
+<ul><li><a href='#51-자원-생산-건물'>5.1 자원 생산 건물</a></li></ul>
+<ul><li><a href='#52-훈련소-건물-전투-덱-카드-해금-및-쿨타임-연동'>5.2 훈련소 건물 (전투 덱 카드 해금 및 쿨타임 연동)</a></li></ul>
+<ul><li><a href='#6-전투-진입-규격-플레이어-공격-전용--적-ai-자동-시뮬레이션'>6. 전투 진입 규격 (플레이어 공격 전용 &amp; 적 AI 자동 시뮬레이션)</a></li></ul>
+<ul><li><a href='#61-플레이어-타일-공격-인게임-전투-씬-100-진입-공성전'>6.1 플레이어 타일 공격: 인게임 전투 씬 100% 진입 (공성전)</a></li></ul>
+<ul><li><a href='#62-적-ai-타일-공격-월드맵-자동-시뮬레이션-연산-공식-auto-simulation'>6.2 적 AI 타일 공격: 월드맵 자동 시뮬레이션 연산 공식 (Auto-Simulation)</a></li></ul>
+<ul><li><a href='#7-전투in-game-기획서-인자-연동-명세-battle-parameters-pipeline'>7. 전투(In-Game) 기획서 인자 연동 명세 (Battle Parameters Pipeline)</a></li></ul>
+<hr>
+<h2 id='1-개요-및-시스템-컨셉-overview-&-concept'>1. 개요 및 시스템 컨셉 (Overview &amp; Concept)</h2>
+<p>본 기획서는 Color Crash의 전역 전략 모드인 <strong>월드맵(World Map) 시스템</strong>의 지형 구성, 타일 점령 규칙, 경제 재화(Gold/AP), 타일 건물 및 훈련소를 정의합니다.</p>
+<p>월드맵은 플레이어가 자신의 영토를 확장하고 자원을 수급하며, 훈련소를 건설하여 전투 씬에서 사용할 <strong>카드 덱(유닛/건물/마법)을 해금하고 능력을 강화하는 메인 전략 레이어</strong> 역할을 수행합니다.</p>
+<hr>
+<h2 id='2-월드맵-타일-종류-및-인터랙션-tile-types-&-interactions'>2. 월드맵 타일 종류 및 인터랙션 (Tile Types &amp; Interactions)</h2>
+<p>월드맵은 사각형 그리드 타일로 구성되며, 각 타일의 소유권 상태에 따라 인터랙션 메뉴가 동적으로 변경됩니다.</p>
+<table>
+  <thead>
+    <tr>
+      <th>타일 구분</th>
+      <th>설명</th>
+      <th>터치/클릭 시 UI 메뉴 (Actions)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>아군 타일 (Friendly Tile)</strong></td>
+      <td>자신 또는 아군 팀이 점유하고 있는 타일</td>
+      <td>- 건물 건설 / 업그레이드&lt;br&gt;- 본진 유닛 생성 및 배치</td>
+    </tr>
+    <tr>
+      <td><strong>중립 타일 (Neutral Tile)</strong></td>
+      <td>아직 소유권이 없는 회색 빈 타일 (도적단 등)</td>
+      <td>- 정찰 (Recon)&lt;br&gt;- 점령 공격 (Attack)</td>
+    </tr>
+    <tr>
+      <td><strong>적군 타일 (Enemy Tile)</strong></td>
+      <td>상대 팀(적 Red 팀)이 점유하고 있는 타일</td>
+      <td>- 영토 점령 공격 (Attack)</td>
+    </tr>
+    <tr>
+      <td><strong>블라인드 타일 (Blind Tile)</strong></td>
+      <td>시야(Fog of War)가 가려져 정보 확인 불가</td>
+      <td>- 클릭 동작 없음 (정찰 필요)</td>
+    </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id='3-월드맵-경제-및-재화-시스템-economy-&-currencies'>3. 월드맵 경제 및 재화 시스템 (Economy &amp; Currencies)</h2>
+<p>월드맵은 <strong>골드(Gold)</strong>와 <strong>행동력(AP)</strong> 2가지 핵심 소비성 재화를 축으로 구동됩니다.</p>
+<h3 id='31-골드-gold-재화-메카닉'>3.1 골드 (Gold) 재화 메카닉</h3>
+<ul><li><strong>수급 방식</strong>: 턴 시작 시 보유한 아군 타일 수에 비례하여 자동으로 골드가 충전됩니다.</li></ul>
+<ul><li>수식: <code>매 턴 충전 골드 = 보유 아군 타일 수 x X</code> (기본 계수 X)</li></ul>
+<ul><li><strong>주요 사용처</strong>:</li></ul>
+<ul><li>타일 건물 건설 및 업그레이드</li></ul>
+<ul><li>월드맵 유닛 구매</li></ul>
+<ul><li>부족한 AP(행동력) 추가 구매</li></ul>
+<h3 id='32-행동력-ap---action-point-메카닉'>3.2 행동력 (AP - Action Point) 메카닉</h3>
+<ul><li><strong>소모 방식</strong>: 월드맵에서의 탐험(정찰), 적 타일 공격, 군대 이동 행동 수행 시 소모됩니다.</li></ul>
+<ul><li><strong>부대 규모 가중치</strong>: 이동 및 전투에 참여하는 부대 규모가 클수록 더 많은 AP가 소모됩니다.</li></ul>
+<ul><li><strong>이월 및 한도 룰</strong>: 턴 종료 시 남은 AP는 다음 턴으로 이월되며, 최대 보유 제한 한도를 초과할 수 없습니다.</li></ul>
+<hr>
+<h2 id='4-타일-지형-속성-및-자원-구획-tile-terrain-&-resources'>4. 타일 지형 속성 및 자원 구획 (Tile Terrain &amp; Resources)</h2>
+<p>월드맵 타일은 고유한 지형 속성을 지니며, 점령 시 지정된 자원 이점을 제공합니다.</p>
+<table>
+  <thead>
+    <tr>
+      <th>지형 자원 속성</th>
+      <th>제공 자원 / 이점</th>
+      <th>설명</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>금 자원 (Gold Deposit)</strong></td>
+      <td>골드 (Gold)</td>
+      <td>점령 시 매 턴 골드 수급량 대폭 증가</td>
+    </tr>
+    <tr>
+      <td><strong>목초지 자원 (Pasture)</strong></td>
+      <td>행동력 (AP)</td>
+      <td>점령 시 매 턴 AP 최대 보유량 및 수급량 증가</td>
+    </tr>
+    <tr>
+      <td><strong>농경지 자원 (Farmland)</strong></td>
+      <td>군사 유닛 (Units)</td>
+      <td>점령 시 군사 유닛 수급 및 인구 한도 확장</td>
+    </tr>
+    <tr>
+      <td><strong>거대 산악 지역 (Mountain)</strong></td>
+      <td>점령 불가능</td>
+      <td>이동 및 점령이 불가능한 천연 장애물</td>
+    </tr>
+    <tr>
+      <td><strong>고대 유적 (Ancient Ruins - 보류)</strong></td>
+      <td>보너스 (Bonus)</td>
+      <td>정찰/점령 시 일회성 보너스 (골드, 유닛, 훈련)</td>
+    </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id='5-월드맵-타일-건물-및-훈련소-world-map-structures-&-training-centers'>5. 월드맵 타일 건물 및 훈련소 (World Map Structures &amp; Training Centers)</h2>
+<p>아군 타일 위에 골드를 소모하여 다양한 특수 건물을 건설할 수 있습니다.</p>
+<h3 id='51-자원-생산-건물'>5.1 자원 생산 건물</h3>
+<ul><li><strong>금광 (GoldMine)</strong>: 매 턴 Gold 충전 +5 추가.</li></ul>
+<ul><li><strong>농장 (Farmland)</strong>: 매 턴 무료 유닛 +1 추가 생산 및 최대 유닛 보유 제한(Pop Cap) +10 확장.</li></ul>
+<ul><li><strong>목장 (Pasture)</strong>: 매 턴 AP 충전 +2 추가 증가.</li></ul>
+<h3 id='52-훈련소-건물-전투-덱-카드-해금-및-쿨타임-연동'>5.2 훈련소 건물 (전투 덱 카드 해금 및 쿨타임 연동)</h3>
+<p>훈련소 건물은 인게임 전투(In-Game Battle) 씬에서 사용할 <strong>카드 해금 및 소환 쿨타임 감소</strong>와 직접 연동됩니다.</p>
+<table>
+  <thead>
+    <tr>
+      <th>훈련소 건물 명칭</th>
+      <th>월드맵 건설 효과</th>
+      <th>전투(In-Game) 씬 연동 효과</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Footman 훈련소</strong></td>
+      <td>Footman 육성 및 강화</td>
+      <td>전투 시 Footman 소환 쿨타임 감소</td>
+    </tr>
+    <tr>
+      <td><strong>Elite 훈련소</strong></td>
+      <td>Elite 유닛 해금</td>
+      <td>전투 시 <strong>Elite 카드 활성화 (해금)</strong> 및 쿨타임 감소</td>
+    </tr>
+    <tr>
+      <td><strong>Warlord 훈련소</strong></td>
+      <td>Warlord 중탱커 해금</td>
+      <td>전투 시 <strong>Warlord 카드 활성화 (해금)</strong> 및 쿨타임 감소</td>
+    </tr>
+    <tr>
+      <td><strong>공병 훈련소</strong></td>
+      <td>공병 기술 해금</td>
+      <td>전투 시 <strong>건물(Barricade/Cannon/Mortar) 카드 활성화 (해금)</strong> 및 쿨타임 감소</td>
+    </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id='6-전투-진입-규격-플레이어-공격-전용-&-적-ai-자동-시뮬레이션'>6. 전투 진입 규격 (플레이어 공격 전용 &amp; 적 AI 자동 시뮬레이션)</h2>
+<p>유저의 플레이 피로도(Play Fatigue)를 줄이고 경쾌한 전역 템포를 유지하기 위해, 전투 씬 진입 조건은 <strong>플레이어의 공격 시로 엄격히 제한</strong>됩니다.</p>
+<h3 id='61-플레이어-타일-공격:-인게임-전투-씬-100%-진입-공성전'>6.1 플레이어 타일 공격: 인게임 전투 씬 100% 진입 (공성전)</h3>
+<ul><li>플레이어가 아군 부대를 동원하여 적군(Red 팀) 또는 중립(도적단) 타일을 공격할 경우, <strong>100% 인게임 실시간 타일 칠하기 전투 씬으로 전환</strong>됩니다.</li></ul>
+<ul><li>플레이어는 직접 카드를 소환하고 전선을 확장하여 제한시간 내에 타일을 점령하는 손맛 전투를 즐깁니다.</li></ul>
+<h3 id='62-적-ai-타일-공격:-월드맵-자동-시뮬레이션-연산-공식-auto-simulation'>6.2 적 AI 타일 공격: 월드맵 자동 시뮬레이션 연산 공식 (Auto-Simulation)</h3>
+<ul><li>적 AI가 플레이어 타일(Blue 팀)이나 중립 도적단 타일을 공격할 때는 <strong>인게임 전투 씬으로 전환되지 않고, 월드맵 상에서 1초 만에 자동 시뮬레이션 연산으로 승패가 판정</strong>됩니다.</li></ul>
+<ul><li><strong>자동 시뮬레이션 연산 공식</strong>:</li></ul>
+<pre><code>  최종 승리 판정 수치 = (공격 측 전투력 / 수비 측 전투력) x 난수 보정치 (0.85 ~ 1.15)</code></pre>
+<ul><li><strong>수비 측 방어 건물 보너스</strong>:</li></ul>
+<ul><li>수비 타일에 건설된 건물에 따라 수비 측 전투력에 강력한 가산 보너스가 부여됩니다.</li></ul>
+<ul><li>*Barricade (바리케이드)* 건설 타일: 수비 측 전투력 <strong>+25% 보너스</strong></li></ul>
+<ul><li>*Cannon (캐논)* 건설 타일: 수비 측 전투력 <strong>+35% 보너스</strong></li></ul>
+<ul><li>*Mortar (박격포)* 건설 타일: 수비 측 전투력 <strong>+45% 보너스</strong></li></ul>
+<ul><li><strong>승패 및 타일 소유권 판정</strong>:</li></ul>
+<ul><li>판정 수치 1.0 이상 ➔ <strong>공격 측 승리</strong>: 타일 소유권 변경 및 수비 부대 패퇴.</li></ul>
+<ul><li>판정 수치 1.0 미만 ➔ <strong>수비 측 승리 (방어 성공)</strong>: 타일 소유권 유지.</li></ul>
+<ul><li><strong>전투 결과 UI 보고</strong>: 적 AI의 자동 공격 완료 즉시 월드맵 화면에 *"[A-3 타일] 기습 방어 성공/실패"* 토스트 알림 로그 표출.</li></ul>
+<hr>
+<h2 id='7-전투in-game-기획서-인자-연동-명세-battle-parameters-pipeline'>7. 전투(In-Game) 기획서 인자 연동 명세 (Battle Parameters Pipeline)</h2>
+<p>월드맵에서 전투 진입 시 메인 전투 기획서(<code>battlefield_gdd.md</code>)로 전달하는 파라미터 연동 규격입니다.</p>
+<pre><code>[ 월드맵 영토 / 훈련소 상태 ]
+       │
+       ├─► 1. MapScaleParam (1~5단계): 영토 구획에 따른 전장 크기 지정
+       ├─► 2. UnitScaleParam (N = 1~30): Farmland 수에 따른 인구수(10+N) 및 잉크 속도 지정
+       ├─► 3. CardDeckUnlockBitmask: 훈련소 해금 상태에 따른 전투 덱 활성화
+       └─► 4. BattleMode: 공성전 (Offensive Siege) 100% 지정
+       │
+       ▼
+[ 전투 씬 (In-Game Battle) 진입 실행 ]</code></pre>
+</body>
+</html>

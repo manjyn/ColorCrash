@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>컬러 크러쉬: 전투 메인 기획서</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #ffffff;
+            color: #24292e;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans KR", sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px 40px;
+            border: 1px solid #e1e4e8;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        h1 {
+            font-size: 2.2rem;
+            border-bottom: 2px solid #eaecef;
+            padding-bottom: 0.3em;
+            color: #1a1a1a;
+            margin-top: 0;
+        }
+        h2 {
+            font-size: 1.6rem;
+            border-bottom: 1px solid #eaecef;
+            padding-bottom: 0.3em;
+            margin-top: 1.8em;
+            color: #2b2b2b;
+        }
+        h3 {
+            font-size: 1.25rem;
+            margin-top: 1.4em;
+            color: #333333;
+        }
+        p, li {
+            font-size: 15px;
+            color: #24292e;
+        }
+        hr {
+            height: 0.25em;
+            padding: 0;
+            margin: 24px 0;
+            background-color: #e1e4e8;
+            border: 0;
+        }
+        ul, ol {
+            padding-left: 2em;
+        }
+        li {
+            margin-bottom: 0.3em;
+        }
+        code {
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            background-color: #f3f4f6;
+            border-radius: 3px;
+            font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace;
+        }
+        pre {
+            padding: 16px;
+            overflow: auto;
+            font-size: 85%;
+            line-height: 1.45;
+            background-color: #f6f8fa;
+            border-radius: 6px;
+            border: 1px solid #e1e4e8;
+        }
+        pre code {
+            display: inline;
+            background-color: transparent;
+            border: 0;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            display: block;
+            overflow-x: auto;
+        }
+        table th, table td {
+            padding: 8px 13px;
+            border: 1px solid #dfe2e5;
+        }
+        table th {
+            font-weight: 600;
+            background-color: #f6f8fa;
+        }
+        table tr:nth-child(2n) {
+            background-color: #fcfcfc;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+<h1>컬러 크러쉬: 전투 메인 기획서</h1>
+
+<hr>
+
+<h2>목차 (Table of Contents)</h2>
+<ul>
+    <li><a href="#1-전장-개요-battlefield-overview">1. 전장 개요 (Battlefield Overview)</a>
+        <ul>
+            <li><a href="#11-승리-및-패배-판정-조건-win--loss-conditions">1.1 승리 및 패배 판정 조건 (Win / Loss Conditions)</a></li>
+        </ul>
+    </li>
+    <li><a href="#2-전장-레이아웃--5단계-동적-규격-map-layout--5-scales">2. 전장 레이아웃 &amp; 5단계 동적 규격 (Map Layout &amp; 5 Scales)</a>
+        <ul>
+            <li><a href="#21-타일-구획-및-속성">2.1 타일 구획 및 속성</a></li>
+            <li><a href="#22-동적-유닛-규모unit-scale-인자-연동-규격">2.2 동적 유닛 규모(Unit Scale) 인자 연동 규격</a></li>
+        </ul>
+    </li>
+    <li><a href="#3-소환--배치-규칙-deployment-rules">3. 소환 &amp; 배치 규칙 (Deployment Rules)</a>
+        <ul>
+            <li><a href="#31-전장-크기별-건물-사용-제한-룰-building-rule-per-scale">3.1 전장 크기별 건물 사용 제한 룰 (Building Rule per Scale)</a></li>
+            <li><a href="#32-건물-배치-시-유닛-밀쳐내기-unit-displacement">3.2 건물 배치 시 유닛 밀쳐내기 (Unit Displacement)</a></li>
+            <li><a href="#33-월드맵-카드-해금--동적-손패-슬롯-시스템">3.3 월드맵 카드 해금 &amp; 동적 손패 슬롯 시스템</a></li>
+        </ul>
+    </li>
+    <li><a href="#4-잉크-자원-및-유닛전투-메카닉">4. 잉크 자원 및 유닛/전투 메카닉</a>
+        <ul>
+            <li><a href="#41-잉크ink-자원-시스템-및-초기-잉크-룰">4.1 잉크(Ink) 자원 시스템 및 초기 잉크 룰</a></li>
+            <li><a href="#42-유닛-및-타워-상세-능력치-규격">4.2 유닛 및 타워 상세 능력치 규격</a></li>
+            <li><a href="#43-유닛-물리physics-시야aggro-및-타겟팅-메카닉">4.3 유닛 물리(Physics), 시야(Aggro) 및 타겟팅 메카닉</a></li>
+        </ul>
+    </li>
+    <li><a href="#5-수비측-동선-이점--영역-중립화">5. 수비측 동선 이점 &amp; 영역 중립화</a>
+        <ul>
+            <li><a href="#51-수비측-동선-이점-defenders-advantage">5.1 수비측 동선 이점 (Defender's Advantage)</a></li>
+            <li><a href="#52-건물-파괴-시-영역-중립화-neutralization">5.2 건물 파괴 시 영역 중립화 (Neutralization)</a></li>
+        </ul>
+    </li>
+    <li><a href="#6-동적-4단계-전투-진행-공식-dynamic-4-phase-flow">6. 동적 4단계 전투 진행 공식 (Dynamic 4-Phase Flow)</a></li>
+    <li><a href="#7-적-ai-행동-규칙-및-데이터-구조-enemy-ai-architecture">7. 적 AI 행동 규칙 및 데이터 구조 (Enemy AI Architecture)</a></li>
+    <li><a href="#8-실시간-전황-ui-및-가시화-real-time-ui-indicator">8. 실시간 전황 UI 및 가시화 (Real-Time UI Indicator)</a></li>
+    <li><a href="#9-승리-등급-판정-및-월드맵-연동-star-rating">9. 승리 등급 판정 및 월드맵 연동 (Star Rating)</a></li>
+</ul>
+
+<hr>
+
+<h2 id="1-전장-개요-battlefield-overview">1. 전장 개요 (Battlefield Overview)</h2>
+
+<p>Color Crash의 전장은 직사각형 형태의 그리드 타일맵으로 구성되며, "영역 점령(칠하기)"과 "전선(Frontline) 확장"을 핵심 테마로 합니다.</p>
+
+<ul>
+    <li><strong>동적 5단계 전장 시스템 (Dynamic 5-Scale System)</strong>:
+        <ul>
+            <li>전투 시작 시 월드맵(또는 대전 모드)에서 전달받는 인자(Parameter) 값에 따라 전장의 크기가 총 5가지 단계 중 하나로 동적 선택됩니다.</li>
+            <li>전투 제한시간(Match Duration) 및 Phase 진행 시간은 결정된 전장의 크기에 비례하여 동적으로 자동 산정됩니다.</li>
+        </ul>
+    </li>
+</ul>
+
+<h3 id="11-승리-및-패배-판정-조건-win--loss-conditions">1.1 승리 및 패배 판정 조건 (Win / Loss Conditions)</h3>
+<ol>
+    <li><strong>즉시 K.O 승리 (Instant Knockout Victory)</strong>:
+        <ul><li>전투 제한시간과 상관없이 전장의 <strong>전체 타일을 100% 모두 아군 색으로 점령하는 순간 그 즉시 Perfect K.O 승리</strong>가 선언됩니다.</li></ul>
+    </li>
+    <li><strong>타임아웃 승리 커트라인 (Decision Victory)</strong>:
+        <ul>
+            <li>전투 제한시간(1분 30초 ~ 5분)이 모두 종료되었을 때, 전체 타일 중 <strong>아군 점령 비율이 설정된 승리 커트라인(기본 70%, <code>BattleContext.DecisionVictoryRatio</code> 변수로 동적 설정) 이상일 때만 승리</strong>로 판정됩니다.</li>
+            <li>스테이지 난이도, 전투 모드(방어전, 거점정복전 등), 맵 스케일에 따라 필요 점령 비율(예: 50%~85%)을 동적으로 커스텀 설정할 수 있습니다.</li>
+        </ul>
+    </li>
+    <li><strong>패배 판정 (Defeat Condition)</strong>:
+        <ul><li>제한시간 종료 시 아군 타일 점령 비율이 <strong>설정된 승리 커트라인 미만이거나, 전투 중 아군 타일이 0개가 될 경우 패배</strong>로 판정됩니다.</li></ul>
+    </li>
+</ol>
+
+<hr>
+
+<h2 id="2-전장-레이아웃--5단계-동적-규격-map-layout--5-scales">2. 전장 레이아웃 &amp; 5단계 동적 규격 (Map Layout &amp; 5 Scales)</h2>
+
+<p>월드맵 인자에 따라 선택되는 총 5단계의 전장 규격 표준입니다.</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>단계 (Scale Level)</th>
+            <th>Grid 크기</th>
+            <th>장애물 개수</th>
+            <th>추천 사용처 (월드맵 인자 예시)</th>
+            <th>동적 제한시간</th>
+            <th>4단계 Phase 배분 (20% / 30% / 30% / 20%)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1단계: 초소형 (Very Small)</td>
+            <td>10 x 14 타일</td>
+            <td>1개 (중앙)</td>
+            <td>튜토리얼 / 1v1 마이크로 듀얼 / 미니게임</td>
+            <td>1분 30초 (90초)</td>
+            <td>18초 / 27초 / 27초 / 18초</td>
+        </tr>
+        <tr>
+            <td>2단계: 소형 (Small)</td>
+            <td>12 x 20 타일</td>
+            <td>2개 (대칭)</td>
+            <td>일반 잡몹 스테이지 / 스피드 대전</td>
+            <td>2분 (120초)</td>
+            <td>24초 / 36초 / 36초 / 24초</td>
+        </tr>
+        <tr>
+            <td>3단계: 중형 (Medium - 표준)</td>
+            <td>14 x 24 타일</td>
+            <td>2 ~ 4개</td>
+            <td>표준 스테이지 / 일반 대전 (기본 대표 규격)</td>
+            <td>3분 (180초)</td>
+            <td>36초 / 54초 / 54초 / 36초</td>
+        </tr>
+        <tr>
+            <td>4단계: 대형 (Large)</td>
+            <td>20 x 28 타일</td>
+            <td>4 ~ 6개</td>
+            <td>정예 스테이지 / 라인 영토 점령전</td>
+            <td>4분 (240초)</td>
+            <td>48초 / 72초 / 72초 / 48초</td>
+        </tr>
+        <tr>
+            <td>5단계: 초대형 (Very Large)</td>
+            <td>24 x 36 타일</td>
+            <td>6 ~ 8개</td>
+            <td>대규모 월드 보스전 / 팀 정복전 / 이벤트전</td>
+            <td>5분 (300초)</td>
+            <td>60초 / 90초 / 90초 / 60초</td>
+        </tr>
+    </tbody>
+</table>
+
+<pre><code>┌─────────────────────────────────────────┐
+│     [ Red 팀 스폰 존 (15~20%) ]         │  ◄── Red 유닛 전용 스폰 구역
+├─────────────────────────────────────────┤
+│                                         │
+│      ▒▒▒▒▒▒▒▒        ▒▒▒▒▒▒▒▒           │  ◄── 이동/점령 불가 장애물 (Obstacle)
+│      (장애물 A)      (장애물 B)          │      (전장 크기에 맞춰 수/크기 스케일링)
+│                                         │
+│       [ 중앙 중립 타일 지대 (60~70%) ]    │  ◄── 초기 무색/회색 타일
+│                                         │      (유닛이 지나가며 색칠)
+│      ▒▒▒▒▒▒▒▒        ▒▒▒▒▒▒▒▒           │
+│                                         │
+├─────────────────────────────────────────┤
+│     [ Blue 팀 스폰 존 (15~20%) ]        │  ◄── Blue 유닛 전용 스폰 구역
+└─────────────────────────────────────────┘</code></pre>
+
+<h3 id="21-타일-구획-및-속성">2.1 타일 구획 및 속성</h3>
+<ol>
+    <li><strong>스폰 존 (Base Spawn Zone)</strong>:
+        <ul>
+            <li>전장 최상단(Red) 및 최하단(Blue) 일부 영역.</li>
+            <li>유닛 소환이 허용되는 유일한 지정 구역. 기본 해당 팀 색상으로 자동 보유.</li>
+        </ul>
+    </li>
+    <li><strong>중립 타일 (Neutral Tile)</strong>:
+        <ul>
+            <li>전장 중앙 대부분(60~70%)을 차지하는 영역.</li>
+            <li>초기에는 무색(회색). 유닛이 통과하거나 공격 명중 시 타일(HP 없음)이 해당 팀의 색상으로 점령/칠해짐.</li>
+        </ul>
+    </li>
+    <li><strong>이동/점령 불가 장애물 (Obstacle Tile)</strong>:
+        <ul>
+            <li>전장 크기에 따라 1개 ~ 8개의 대칭형 장애물 배치.</li>
+            <li>유닛 이동 및 건물 설치 불가능 ➔ 자연스러운 병목 지점(Chokepoint) 및 다중 라인(Line) 형성.</li>
+        </ul>
+    </li>
+</ol>
+
+<h3 id="22-동적-유닛-규모unit-scale-인자-연동-규격">2.2 동적 유닛 규모(Unit Scale) 인자 연동 규격</h3>
+<p>전장 진입 시 월드맵으로부터 전장 크기 인자와 함께 <strong>유닛 규모 인자(UnitScaleParam, N = 1 ~ 30 자연수)</strong>를 넘겨받아 전장의 물량 밀도 및 잉크 충전 밸런스를 수식으로 자동 스케일링합니다.</p>
+
+<ol>
+    <li><strong>필드 최대 인구수 공식 (Max Unit Population Cap)</strong>:
+        <ul>
+            <li>수식: <code>팀당 최대 인구수 = 10 + N</code> (최소 11기 ~ 최대 40기)</li>
+            <li>N = 1 (소규모): 팀당 최대 11기 제한 (소규모 정밀전)</li>
+            <li>N = 15 (표준): 팀당 최대 25기 제한 (표준 대전)</li>
+            <li>N = 30 (대규모): 팀당 최대 40기 제한 (대규모 군단 난전)</li>
+        </ul>
+    </li>
+    <li><strong>기본 잉크 충전 속도 공식 (Ink Charge Speed)</strong>:
+        <ul>
+            <li>수식: <code>잉크 충전 주기(초) = 1.2초 - (N x 0.02초)</code> (최소 1.18초 ~ 최대 0.60초)</li>
+            <li>N = 1: 1.18초당 1 Ink 충전 (신중한 자원 연산)</li>
+            <li>N = 15: 0.90초당 1 Ink 충전 (표준 속도)</li>
+            <li>N = 30: 0.60초당 1 Ink 충전 (폭풍 자원 수급 난전)</li>
+        </ul>
+    </li>
+</ol>
+
+<hr>
+
+<h2 id="3-소환--배치-규칙-deployment-rules">3. 소환 &amp; 배치 규칙 (Deployment Rules)</h2>
+
+<p>카드 타입은 크게 세 가지(유닛, 건물, 마법 스펠)로 나뉩니다.</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>구분</th>
+            <th>유닛 (Units)</th>
+            <th>건물 (Structures)</th>
+            <th>마법 스펠 (Spells)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>조작 방식</td>
+            <td>카드 버튼 클릭 (Click)</td>
+            <td>카드 버튼 클릭-드래그 (Drag &amp; Drop)</td>
+            <td>카드 버튼 클릭-드래그 (Drag &amp; Drop)</td>
+        </tr>
+        <tr>
+            <td>타겟/위치</td>
+            <td><strong>팀별 지정 스폰 존 내부 (스폰 제한)</strong></td>
+            <td>아군 점령 타일 내 어디든 자유 배치</td>
+            <td>전장 내 타겟 위치 어디든 즉시 시전</td>
+        </tr>
+        <tr>
+            <td>소환 딜레이</td>
+            <td>즉시 소환 (0초)</td>
+            <td>즉시 배치 (0초)</td>
+            <td>즉시 시전 발동 (0초)</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3 id="31-전장-크기별-건물-사용-제한-룰-building-rule-per-scale">3.1 전장 크기별 건물 사용 제한 룰 (Building Rule per Scale)</h3>
+<p>전장의 크기 및 타일 구획 면적에 따라 건물 카드의 사용 여부가 동적으로 제한됩니다:</p>
+<ul>
+    <li><strong>1~2단계 소형 전장 (유닛 스피드전)</strong>:
+        <ul><li>좁은 타일 공간에서의 통로 막힘(Path Blocking) 방지 및 신속한 대전을 위해 <strong>건물 카드 사용이 제한</strong>되며 <code>유닛 4종 + 마법 스펠 1종</code> 중심의 스피드 칠하기 대전으로 자동 세팅됩니다.</li></ul>
+    </li>
+    <li><strong>3~5단계 중/대형 전장 (요새 공성전)</strong>:
+        <ul><li>건물(Barricade, Cannon, Mortar)을 포함한 모든 카드가 허용되어 요새 방어선 구축 및 공성전이 진행됩니다.</li></ul>
+    </li>
+</ul>
+
+<h3 id="32-건물-배치-시-유닛-밀쳐내기-unit-displacement">3.2 건물 배치 시 유닛 밀쳐내기 (Unit Displacement)</h3>
+<ul>
+    <li><strong>건물 설치 타일 조건</strong>: 건물(Barricade 4x1, Cannon 2x2, Mortar 2x2) 설치 시 배치하려는 <strong>전체 영역(4x1, 2x2)의 모든 타일이 반드시 해당 팀(아군)의 점령 타일</strong>이어야 합니다. 중립 타일이나 적 타일이 1칸이라도 섞여 있으면 배치가 불가능합니다.</li>
+    <li>아군 점령 타일 위에 건물 배치 시 유닛이 이미 올라와 있더라도 건설이 거부되지 않고 즉시 건설됩니다.</li>
+    <li>건물이 타일에 내려앉는 순간, 해당 타일 영역 내의 유닛들은 외곽 인접 타일로 <strong>밀려납니다 (Push Out)</strong>.
+        <ul>
+            <li><strong>아군 유닛</strong>: 건물 영역 밖 가장 가까운 인접 아군 타일로 자연스럽게 밀려남.</li>
+            <li><strong>적군 유닛</strong>: 침투한 적 유닛은 적 진영 방향으로 1칸 넉백 + 0.5초 스턴 피격 (강제 방어선 구축 효과).</li>
+        </ul>
+    </li>
+</ul>
+
+<h3 id="33-월드맵-카드-해금--동적-손패-슬롯-시스템">3.3 월드맵 카드 해금 &amp; 동적 손패 슬롯 시스템 (Dynamic Hand Size System)</h3>
+<ul>
+    <li><strong>상시 활성화 고정 카드 (Fixed Active Cards)</strong>:
+        <ul><li><strong><code>손패 리셋 (Ink Reroll)</code></strong> 및 <strong><code>매직 공격 (Ink Bomb 스펠)</code></strong> 2종 카드는 진입 상황에 관계없이 항상 UI 상에 <strong>상시 활성화(Active) 상태로 고정 노출</strong>됩니다.</li></ul>
+    </li>
+    <li><strong>유닛 및 건물 카드 (총 7종) 잠금/해금 및 손패 노출 룰</strong>:
+        <ul>
+            <li>대상 7종 카드 (<code>Footman</code>, <code>Elite</code>, <code>Warlord</code>, <code>Archer</code>, <code>Barricade</code>, <code>Cannon</code>, <code>Mortar</code>)는 월드맵 훈련소 건설 상태, 스테이지 파라미터에 따라 전투 진입 전 잠금(Lock) / 해금(Unlock) 상태가 결정됩니다.</li>
+            <li><em>해금(열림) 카드가 4개 이하일 때</em>: 해금된 카드 전부(3~4개)가 <strong>손패 슬롯(4슬롯 UI)에 고정 노출</strong>됩니다.</li>
+            <li><em>해금(열림) 카드가 5개 이상일 때</em>: 해금된 카드 중 <strong>무작위(Random) 4개만 선택되어 손패 슬롯에 노출</strong>되며 카드를 사용할 때마다 다음 카드가 순환 드로우됩니다.</li>
+        </ul>
+    </li>
+    <li><strong>잉크 소모 손패 리셋 (Ink Reroll)</strong>:
+        <ul><li>1 Ink를 소모하여 현재 손패를 즉시 새로고침(Reroll) 가능 (쿨타임 2초).</li></ul>
+    </li>
+</ul>
+
+<hr>
+
+<h2 id="4-잉크-자원-및-유닛전투-메카닉">4. 잉크 자원 및 유닛/전투 메카닉</h2>
+
+<h3 id="41-잉크ink-자원-시스템-및-초기-잉크-룰">4.1 잉크(Ink) 자원 시스템 및 초기 잉크 룰</h3>
+<ul>
+    <li><strong>초기 보유 잉크 (Starting Ink)</strong>:
+        <ul>
+            <li>전투 개시 "GO!" 카운트다운 직후 유저와 AI 모두 <strong>기본 4 Ink를 보유한 채로 전투를 시작</strong>합니다.</li>
+            <li>0 Ink 스타트 시 발생하는 초반 정적 딜레이(Dead Time)를 제거하여, 시작과 동시에 첫 카드를 0초 만에 바로 스폰할 수 있는 경쾌한 전투 시작 템포를 제공합니다.</li>
+        </ul>
+    </li>
+    <li><strong>최대 보유 잉크 한도 규격 (Max Ink Capacity)</strong>:
+        <ul>
+            <li><strong>기본 대표 한도</strong>: 표준 전장 기본 <strong>10 Ink</strong> (<code>maxInkCap = 10</code>).</li>
+            <li><strong>동적 확장 룰 (Dynamic Max Cap)</strong>:
+                <ul>
+                    <li><em>5단계 초대형 전장 (MapScale 5)</em>: 대규모 콤보 소환을 위해 <strong>최대 15 Ink</strong>로 확장.</li>
+                    <li><em>월드맵 건물 연동</em>: 월드맵 <code>잉크 저장소</code> 건물 건설/업그레이드 시 <strong>최대 11~12 Ink</strong>로 영구 확장.</li>
+                    <li><em>Phase 4 (컬러 피버)</em>: 충전 2배속과 함께 <strong>최대 15 Ink</strong>로 한도 일시 해제.</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>충전 속도 (Phase 1~3)</strong>: 기본 설정 충전 속도 유지.</li>
+    <li><strong>피버 속도 (Phase 4)</strong>: 0.5초당 1 Ink 충전 (2배속).</li>
+    <li><strong>스노우볼 방지 [분노의 잉크]</strong>: 점령률 40% 미만 열세 팀은 잉크가 0.77초 만에 충전(30% 가속).</li>
+</ul>
+
+<h3 id="42-유닛-및-타워-상세-능력치-규격">4.2 유닛 및 타워 상세 능력치 규격</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>구분</th>
+            <th>카드 명칭</th>
+            <th>소비 잉크</th>
+            <th>Max HP</th>
+            <th>방어력</th>
+            <th>이동속도</th>
+            <th>공격력 (ATK)</th>
+            <th>초당 딜량 (DPS)</th>
+            <th>사거리 (Range)</th>
+            <th>공격 쿨타임 (속도)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>유닛</strong></td>
+            <td><strong>Footman</strong></td>
+            <td>2 Ink</td>
+            <td>120</td>
+            <td>5</td>
+            <td>35</td>
+            <td>35</td>
+            <td>31.25 DPS</td>
+            <td>1칸</td>
+            <td>0.8초 (1.25 APS)</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><strong>Elite</strong></td>
+            <td>3 Ink</td>
+            <td>220</td>
+            <td>15</td>
+            <td>25</td>
+            <td>55</td>
+            <td>55.00 DPS</td>
+            <td>1칸</td>
+            <td>1.0초 (1.00 APS)</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><strong>Warlord</strong></td>
+            <td>4 Ink</td>
+            <td>550</td>
+            <td>30</td>
+            <td>18</td>
+            <td>80 (건물우선, <strong>넉백</strong>)</td>
+            <td>66.64 DPS</td>
+            <td>1칸</td>
+            <td>1.2초 (0.83 APS)</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><strong>Archer</strong></td>
+            <td>3 Ink</td>
+            <td>90</td>
+            <td>0</td>
+            <td>25</td>
+            <td>35</td>
+            <td>35.00 DPS</td>
+            <td>5칸</td>
+            <td>1.0초 (1.00 APS)</td>
+        </tr>
+        <tr>
+            <td><strong>건물</strong></td>
+            <td><strong>Barricade</strong></td>
+            <td>2 Ink</td>
+            <td>400 (4x1)</td>
+            <td>25</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><strong>Cannon</strong></td>
+            <td>4 Ink</td>
+            <td>300 (2x2)</td>
+            <td>15</td>
+            <td>-</td>
+            <td>60 (<strong>넉백</strong>)</td>
+            <td>50.00 DPS</td>
+            <td>5칸 (직사)</td>
+            <td>1.2초 (0.83 APS)</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><strong>Mortar</strong></td>
+            <td>5 Ink</td>
+            <td>200 (2x2)</td>
+            <td>10</td>
+            <td>-</td>
+            <td>75 (<strong>광역+넉백</strong>)</td>
+            <td>30.00 DPS</td>
+            <td>3~10칸</td>
+            <td>2.5초 (0.40 APS)</td>
+        </tr>
+        <tr>
+            <td><strong>마법</strong></td>
+            <td><strong>Ink Bomb</strong></td>
+            <td>3 Ink</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>50 (광역 직접 타격)</td>
+            <td>-</td>
+            <td>3x3 타일 지정</td>
+            <td>즉발 (즉시 도색)</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3 id="43-유닛-물리physics-시야aggro-및-타겟팅-메카닉">4.3 유닛 물리(Physics), 시야(Aggro) 및 타겟팅 메카닉</h3>
+
+<p>전장의 깊이를 더하는 물리 연산 및 AI 탐색 룰입니다.</p>
+
+<ol>
+    <li><strong>시야 범위 (Aggro Range)</strong>:
+        <ul>
+            <li>유닛은 기본적으로 전방으로 직진하는 성향을 가지며, <strong>전방 3칸 반경의 시야(Aggro Range)</strong>를 지닙니다.</li>
+            <li>이동 중 시야 반경 내에 적 유닛이나 건물이 포착되면 즉시 타겟팅을 실시하고 대상을 향해 최단 거리로 이동 궤적을 꺾어 교전을 개시합니다.</li>
+        </ul>
+    </li>
+    <li><strong>유닛 충돌 크기 (Body Blocking / Collision)</strong>:
+        <ul>
+            <li>유닛들은 동일한 타일(1x1) 내에 완전히 겹쳐지지 않도록 <strong>충돌 판정(Collision) 공간</strong>을 지닙니다.</li>
+            <li>다수의 유닛이 같은 곳으로 몰리더라도 서로를 밀어내며 자연스럽게 옆 타일로 넓게 퍼져서 이동합니다.</li>
+        </ul>
+    </li>
+    <li><strong>넉백 메카닉 (Knockback / 밀쳐내기)</strong>:
+        <ul><li>육중한 물리적 타격(Cannon/Mortar/Warlord/건물 배치 밀쳐내기)을 받을 경우 유닛은 뒤로 약 0.5칸 ~ 1칸 물리적으로 밀려나며 0.5초의 일시적인 스턴(공격 딜레이) 상태에 빠집니다.</li></ul>
+    </li>
+    <li><strong>전장 경계 이탈 방지 예외 처리 (Map Boundary Clamping)</strong>:
+        <ul>
+            <li>유닛이 피격 넉백을 당하거나 건물 배치로 밀려날 때, <strong>전장 외곽 경계선 밖으로 밀려나 탈출하거나 이동 불가 장애물(Obstacle Tile) 내부로 파묻히지 않습니다.</strong></li>
+            <li>넉백 궤적 상 전장 경계선 타일이나 장애물 타일이 존재할 경우, 유닛의 최종 좌표는 <strong>경계선 내부 인접 가용 타일에 정지(Boundary Clamping)</strong> 처리됩니다.</li>
+        </ul>
+    </li>
+</ol>
+
+<hr>
+
+<h2 id="5-수비측-동선-이점--영역-중립화">5. 수비측 동선 이점 &amp; 영역 중립화</h2>
+
+<h3 id="51-수비측-동선-이점-defenders-advantage">5.1 수비측 동선 이점 (Defender's Advantage)</h3>
+<ul>
+    <li>승리 팀이 적진 깊숙이 전선을 밀수록 스폰 존에서부터 전선까지 걸어오는 유닛의 이동 시간(Travel Time)이 늘어남.</li>
+    <li>반면 열세 팀은 스폰 존 바로 앞이 전선이므로 0초 만에 전선에 유닛 합류. 진격할수록 자연스러운 저항력(Friction) 형성.</li>
+</ul>
+
+<h3 id="52-건물-파괴-시-영역-중립화-neutralization">5.2 건물 파괴 시 [영역 중립화 (Neutralization)]</h3>
+<ul>
+    <li>적의 건물(바리케이드/캐논/박격포) 파괴 성공 시, 해당 건물이 점령하고 있던 주변 3x3 범위 타일이 즉시 '중립 타일(Neutral)'로 초기화.</li>
+</ul>
+
+<hr>
+
+<h2 id="6-동적-4단계-전투-진행-공식-dynamic-4-phase-flow">6. 동적 4단계 전투 진행 공식 (Dynamic 4-Phase Flow)</h2>
+
+<p>전장 크기 제한시간에 따라 총 4단계로 진행되며, 전장 모드(건물 허용 맵 vs 건물 제한 맵)에 따라 부스터 특수 효과가 동적으로 적응(Adaptive)합니다.</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Phase 단계</th>
+            <th>명칭 및 테마</th>
+            <th>비율</th>
+            <th>건물 허용 맵 (3~5단계 중/대형)</th>
+            <th>건물 제한 맵 (1~2단계 소형)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Phase 1</strong></td>
+            <td><strong>영토 선점 (Opening Rush)</strong></td>
+            <td><strong>20%</strong></td>
+            <td>첫 드로우 Footman 확정, Footman/Archer 이동속도 +10%</td>
+            <td>동일 적용</td>
+        </tr>
+        <tr>
+            <td><strong>Phase 2</strong></td>
+            <td><strong>전선 구축 / 수비 (Fortress Build)</strong></td>
+            <td><strong>30%</strong></td>
+            <td>Barricade 소모 잉크 -1 할인 (2➔1 Ink), 건물 보충 가속</td>
+            <td><strong>[전선 수비 강화]</strong> 아군 타일 위 유닛 방어력 +5, 유닛 잉크 -1 할인</td>
+        </tr>
+        <tr>
+            <td><strong>Phase 3</strong></td>
+            <td><strong>요새 공성 / 돌격 (Siege &amp; Counter)</strong></td>
+            <td><strong>30%</strong></td>
+            <td>Mortar/Warlord/InkBomb 가속, 건물 파괴 시 3x3 아군 도색</td>
+            <td><strong>[정예 돌격 돌파]</strong> Elite/Warlord 잉크 -1 할인, 유닛 공격력 +20% 가속</td>
+        </tr>
+        <tr>
+            <td><strong>Phase 4</strong></td>
+            <td><strong>컬러 피버 (Color Fever Climax)</strong></td>
+            <td><strong>20%</strong></td>
+            <td>잉크 충전 2배속 (0.5s/Ink), 카드리로드 쿨타임 0초 총력전</td>
+            <td>동일 적용</td>
+        </tr>
+    </tbody>
+</table>
+
+<hr>
+
+<h2 id="7-적-ai-행동-규칙-및-데이터-구조-enemy-ai-architecture">7. 적 AI 행동 규칙 및 데이터 구조 (Enemy AI Architecture)</h2>
+
+<p>적 AI는 세부 기획서에 정의된 <strong>'적 커맨더 AI (Commander AI)'</strong>가 플레이어 역할을 수행하여 소환 카드와 타일을 실시간 결정합니다.</p>
+
+<ol>
+    <li><strong>2계층 AI 구조 (Two-Layer AI System)</strong>:
+        <ul>
+            <li><strong>적 커맨더 AI (Commander AI)</strong>: 잉크 관리, 손패 리롤, 유닛 스폰 위치(스폰 존 제한), 건물 벙커 구축, Ink Bomb 마법 타겟팅 결정.</li>
+            <li><strong>유닛 자율 AI (Unit AI)</strong>: 아군/적군 공통 적용. 스폰 존 출격 후 전방 이동, 시야 반경(Aggro Range 3칸) 감지, 교전, 타일 칠하기.</li>
+        </ul>
+    </li>
+    <li><strong>전장 크기 &amp; 유닛 규모 연동</strong>:
+        <ul><li>1~5단계 MapScale 및 유닛 규모 인자(N = 1~30)에 따른 최대 인구수(<code>10 + N</code>) 한도를 감지하고 유닛/건물 소환 비중 자동 조절.</li></ul>
+    </li>
+    <li><strong>ScriptableObject 기반 데이터 자산 관리</strong>:
+        <ul><li>AI 수치와 성향은 <code>BattleAIDataSO.cs</code> 스크립트를 통한 <code>BattleAIData_XXXX.asset</code> 데이터 자산으로 관리하여 기획자가 유니티 인스펙터 창에서 난이도를 즉시 수정.</li></ul>
+    </li>
+</ol>
+
+<hr>
+
+<h2 id="8-실시간-전황-ui-및-가시화-real-time-ui-indicator">8. 실시간 전황 UI 및 가시화 (Real-Time UI Indicator)</h2>
+
+<ul>
+    <li>상단 점령 비율 바 (Territory Bar): 화면 상단 중앙 실시간 컬러 비중 표시.</li>
+    <li>실시간 전선 표시선 (Frontline Indicator): 맵 위 최전방 전선을 형광 라인으로 표시.</li>
+</ul>
+
+<hr>
+
+<h2 id="9-승리-등급-판정-및-월드맵-연동-star-rating">9. 승리 등급 판정 및 월드맵 연동 (Star Rating)</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>승리 등급</th>
+            <th>판정 명칭</th>
+            <th>점령 달성 조건</th>
+            <th>보상</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>★★★ (3 Star)</strong></td>
+            <td>Perfect Victory</td>
+            <td>전체 타일 100% 점령 또는 85% 이상</td>
+            <td>추후 기획</td>
+        </tr>
+        <tr>
+            <td><strong>★★☆ (2 Star)</strong></td>
+            <td>Great Victory</td>
+            <td>점령 비율 78% ~ 84%</td>
+            <td>추후 기획</td>
+        </tr>
+        <tr>
+            <td><strong>★☆☆ (1 Star)</strong></td>
+            <td>Clear Victory</td>
+            <td>점령 비율 70% ~ 77%</td>
+            <td>추후 기획</td>
+        </tr>
+        <tr>
+            <td><strong>패배 (Defeat)</strong></td>
+            <td>Failed</td>
+            <td>70% 미만</td>
+            <td>-</td>
+        </tr>
+    </tbody>
+</table>
+
+</div>
+</body>
+</html>
